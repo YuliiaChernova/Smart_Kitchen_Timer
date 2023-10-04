@@ -11,5 +11,6 @@ export const COLORS = {
 
 export const SCREENS = {
   HOME: 'Home',
-  LOGIN: 'Login'
+  LOGIN: 'Login',
+  ADD_TIMER: 'AddTimer'
 };

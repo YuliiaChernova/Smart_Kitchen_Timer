@@ -1,7 +1,5 @@
 import {
-  StyleSheet, Text,
-  View, TextInput, TouchableOpacity,
-  Image
+  StyleSheet, View, Image
 } from 'react-native';
 import React, { useState, useContext } from 'react';
 import { useNavigation } from '@react-navigation/native';
@@ -12,6 +10,8 @@ import { auth } from '../firebase-config';
 import authContext from '../context';
 import { COLORS, SCREENS } from '../variables';
 import Layout from '../components/Layout';
+import TouchableBtn from '../components/TouchableBtn';
+import Input from '../components/Input';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -45,35 +45,23 @@ const LoginScreen = () => {
         <Image source={require('../assets/main-logo.png')} />
       </View>
       <View style={styles.inputContainer}>
-        <TextInput
+        <Input
+          value={email}
+          setValue={setEmail}
           placeholder='Email'
           placeholderTextColor={COLORS.GREEN}
-          value={email}
-          onChangeText={text => setEmail(text)}
-          style={styles.input}
         />
-        <TextInput
+        <Input
+          value={password}
+          setValue={setPassword}
           placeholder='Password'
           placeholderTextColor={COLORS.GREEN}
-          value={password}
-          onChangeText={text => setPassword(text)}
-          style={styles.input}
           secureTextEntry
         />
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          onPress={handleLogin}
-          style={styles.button}
-        >
-          <Text style={[styles.button, styles.buttonPrimary]}>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={handleSignUp}
-          style={styles.button}
-        >
-          <Text style={[styles.button, styles.buttonPrimary]}>Sign Up</Text>
-        </TouchableOpacity>
+        <TouchableBtn text='Login' onPressHandler={handleLogin} />
+        <TouchableBtn text='Sign Up' onPressHandler={handleSignUp} />
       </View>
     </Layout>
   )
@@ -91,15 +79,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: COLORS.BACKGROUND,
   },
-  input: {
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 10,
-    marginTop: 5,
-    borderColor: COLORS.PINK,
-    borderWidth: 1,
-    color: COLORS.YELLOW,
-  },
   buttonContainer: {
     flex: 1.5,
     width: '60%',
@@ -107,17 +86,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 20,
     backgroundColor: COLORS.BACKGROUND,
-  },
-  button: {
-    width: '100%',
-    padding: 15,
-    borderRadius: 10,
-    textAlign: 'center'
-  },
-  buttonPrimary: {
-    backgroundColor: COLORS.BACKGROUND,
-    color: COLORS.BLUE,
-    borderColor: COLORS.BLUE,
-    borderWidth: 1,
   },
 });
