@@ -1,28 +1,43 @@
-import { auth } from './firebase-config';
-import { StyleSheet } from 'react-native';
+import { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
 
+import authContext from './context';
+import { SCREENS } from './variables';
+
 const Stack = createNativeStackNavigator();
 
-export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen options={{headerShown: false}} name='Login' component={LoginScreen} />
-        <Stack.Screen options={{headerShown: false}} name='Home' component={HomeScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+const screens = [
+  {
+    name: SCREENS.LOGIN,
+    component: LoginScreen
   },
-});
+  {
+    name: SCREENS.HOME,
+    component: HomeScreen
+  }
+]
+
+export default function App() {
+  const [currentUser, setCurrentUser] = useState(false);
+  return (
+    <authContext.Provider value={{ currentUser, setCurrentUser }}>
+      <NavigationContainer>
+        <Stack.Navigator>
+          {screens.map(screen => {
+            return (
+              <Stack.Screen
+                options={{ headerShown: false }}
+                name={screen.name}
+                component={screen.component}
+                key={Date.now()}
+              />
+            )
+          })}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </authContext.Provider>
+  );
+};

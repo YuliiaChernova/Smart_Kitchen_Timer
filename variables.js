@@ -8,3 +8,8 @@ export const COLORS = {
   GREEN: '#53E8D4',
   VIOLET: '#8921C2'
 };
+
+export const SCREENS = {
+  HOME: 'Home',
+  LOGIN: 'Login'
+};

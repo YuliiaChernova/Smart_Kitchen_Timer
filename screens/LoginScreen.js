@@ -1,24 +1,31 @@
 import {
   StyleSheet, Text,
-  KeyboardAvoidingView, View,
-  TextInput, TouchableOpacity,
+  View, TextInput, TouchableOpacity,
   Image
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase-config';
 
-import { COLORS } from '../variables';
+
+import { auth } from '../firebase-config';
+import authContext from '../context';
+import { COLORS, SCREENS } from '../variables';
+import Layout from '../components/Layout';
 
 const LoginScreen = () => {
+  const navigation = useNavigation();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const { setCurrentUser } = useContext(authContext);
 
   const handleSignUp = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then(userCredentials => {
-        const user = userCredentials.user;
-        console.log(user);
+        setCurrentUser(userCredentials.user);
+        navigation.replace(SCREENS.HOME, { animation: 'slide_from_bottom' })
       })
       .catch(error => alert(error.message))
   };
@@ -26,17 +33,14 @@ const LoginScreen = () => {
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then(userCredentials => {
-        const user = userCredentials.user;
-        console.log(user);
+        setCurrentUser(userCredentials.user);
+        navigation.replace(SCREENS.HOME, { animation: 'slide_from_bottom' })
       })
       .catch(error => alert(error.message))
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior='padding'
-    >
+    <Layout>
       <View style={styles.logoContainer}>
         <Image source={require('../assets/main-logo.png')} />
       </View>
@@ -62,35 +66,30 @@ const LoginScreen = () => {
           onPress={handleLogin}
           style={styles.button}
         >
-          <Text style={[styles.button, styles.buttonSecondary]}>Login</Text>
+          <Text style={[styles.button, styles.buttonPrimary]}>Login</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={handleSignUp}
           style={styles.button}
         >
-          <Text style={[styles.button, styles.buttonSecondary]}>Sign Up</Text>
+          <Text style={[styles.button, styles.buttonPrimary]}>Sign Up</Text>
         </TouchableOpacity>
       </View>
-    </KeyboardAvoidingView>
+    </Layout>
   )
 }
 
 export default LoginScreen
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: COLORS.BACKGROUND,
-  },
   logoContainer: {
-    flex: 2,
+    flex: 2.5,
   },
   inputContainer: {
-    flex: 1.5,
+    flex: 1,
     width: '80%',
-    justifyContent: 'flex-end'
+    justifyContent: 'center',
+    backgroundColor: COLORS.BACKGROUND,
   },
   input: {
     paddingHorizontal: 15,
@@ -107,21 +106,18 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     marginTop: 20,
+    backgroundColor: COLORS.BACKGROUND,
   },
   button: {
     width: '100%',
     padding: 15,
     borderRadius: 10,
-    alignItems: 'center'
+    textAlign: 'center'
   },
   buttonPrimary: {
-    backgroundColor: COLORS.BLUE,
-    color: COLORS.BACKGROUND,
-  },
-  buttonSecondary: {
     backgroundColor: COLORS.BACKGROUND,
     color: COLORS.BLUE,
     borderColor: COLORS.BLUE,
     borderWidth: 1,
-  }
+  },
 });
